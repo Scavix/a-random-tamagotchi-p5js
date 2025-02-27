@@ -1,16 +1,25 @@
+//feeding - playing mechanics - grow - sleep - cleaning - death - win - lose - restart
+
 let startButton;
+let optionButton;
+let islandImage;
 let animalButtons = [];
 let animalImages = {};
-let animals = ["egg", "grass", "fire", "water"];
+let animals = ["egg", "babygrass", "babyfire", "babywater", "grass", "fire", "water"];
 let selectedAnimal = "egg";
 let currentScreen = "start";
+let petName = "";
 
 function preload() {
   // Load images for the animals
+  animalImages["egg"] = loadImage("assets/egg.png");
+  animalImages["babygrass"] = loadImage("assets/babygrass.png");
+  animalImages["babyfire"] = loadImage("assets/babyfire.png");
+  animalImages["babywater"] = loadImage("assets/babywater.png");
   animalImages["grass"] = loadImage("assets/grass.png");
   animalImages["fire"] = loadImage("assets/fire.png");
   animalImages["water"] = loadImage("assets/water.png");
-  animalImages["egg"] = loadImage("assets/egg.png");
+  islandImage = loadImage("assets/island.png");
 }
 
 function setup() {
@@ -20,12 +29,20 @@ function setup() {
   startButton.position(width / 2 - 50, height / 2);
   startButton.mousePressed(startGame);
   styleButton(startButton);
+  /*options button
+  optionButton = createButton("Options");
+  optionButton.position(width / 2 - 50, height / 2 + 100);
+  optionButton.mousePressed(optionsGame);
+  styleButton(optionButton);*/
 }
 
 function draw() {
   switch (currentScreen) {
     case "start":
       drawStartScreen();
+      break;
+    case "options":
+      drawOptionsScreen();
       break;
     case "selectAnimal":
       drawSelectAnimalScreen();
@@ -48,6 +65,27 @@ function drawStartScreen() {
   textAlign(CENTER, CENTER);
   text("Welcome to Tamagotchi!", width / 2, height / 2 - 100);
 }
+/*
+function optionsGame() {
+  console.log("Options");
+  currentScreen = "options";
+  redraw();
+}
+
+function drawOptionsScreen() {
+  background(200);
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  text("Options", width / 2, height / 2 - 150);
+  let backToStartButton = createButton("Back");
+  backToStartButton.position(width / 2 - 50, height / 2 + 150);
+  backToStartButton.mousePressed(() => {
+    currentScreen = "start";
+    redraw();
+    backToStartButton.hide();
+  });
+  styleButton(backToStartButton);
+}*/
 
 function drawSelectAnimalScreen() {
   background(200);
@@ -55,8 +93,8 @@ function drawSelectAnimalScreen() {
   textAlign(CENTER, CENTER);
   text("Select Your Animal", width / 2, height / 2 - 150);
 
-  for (let i = 0; i < animals.length - 1; i++) {
-    let btn = createButton(animals[i + 1]);
+  for (let i = 0; i < animals.length - 4; i++) {
+    let btn = createButton(animals[i + 4]);
     btn.position(width / 2 - 50, height / 2 + i * 150);
     btn.mousePressed(() => selectAnimal(animals[i + 1]));
     styleButton(btn);
@@ -64,7 +102,7 @@ function drawSelectAnimalScreen() {
 
     // Display animal image above the button
     image(
-      animalImages[animals[i + 1]],
+      animalImages[animals[i + 4]],
       width / 2 - 75,
       height / 2 + i * 150 - 100,
       100,
@@ -158,6 +196,9 @@ function drawHatchedScreen() {
   startPlayButton.position(width / 2 - 50, height / 2 + 100);
   styleButton(startPlayButton);
   startPlayButton.mousePressed(() => {
+    // ask for pet name
+    petName = prompt("Enter your pet's name");
+    console.log("Pet's name: " + petName);
     currentScreen = "play";
     redraw();
     startPlayButton.hide();
@@ -168,5 +209,15 @@ function drawPlayScreen() {
   background(200);
   textSize(32);
   textAlign(CENTER, CENTER);
-  text("Play Screen", width / 2, height / 2 - 100);
+  text("Playing with " + petName, width / 2, height / 2 - 100);
+  let backToStartButton = createButton("Back");
+  backToStartButton.position(width / 2 - 50, height / 2 + 150);
+  backToStartButton.mousePressed(() => {
+    // Reset the game by refreshing 
+    location.reload();
+  });
+  styleButton(backToStartButton);
+  // Display the island image and the animal
+  image(islandImage, width / 2 - 200, height / 2 - 200, 400, 400);
+  image(animalImages[selectedAnimal], width / 2 - 50, height / 2, 100, 100);
 }
